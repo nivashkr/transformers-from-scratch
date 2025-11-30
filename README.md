@@ -1,5 +1,7 @@
 # TransformerCPP
+[github repo](https://github.com/nivashkr/transformers-from-scratch)
 
+Inspired from karpthy's from-scratch neural implementations in c++.
 A high-performance C++ implementation of the Transformer architecture from scratch, optimized for CPU computation.
 
 ## Overview
