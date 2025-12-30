@@ -1,76 +1,76 @@
-# TransformerCPP: Building Transformers from Scratch in C++
+# TransformerCPP: Transformers from Scratch in C++
 
-*“The best way to understand something is to build it from scratch.”* — Andrej Karpathy (probably)
-\
-Check out the [GitHub repo](https://github.com/nivashkr/transformers-from-scratch). 
+[GitHub repo](https://github.com/nivashkr/transformers-from-scratch)
 
-## Why Write Yet Another Transformer?
+## Why I Built This
 
-Deep learning frameworks are amazing. They let us build, train, and deploy state-of-the-art models with just a few lines of code. But sometimes, the magic feels a bit too magical. What’s really happening under the hood? How do those matrix multiplications, attention heads, and layer normalizations actually work? 
+Most deep learning code today is written using big frameworks like PyTorch or TensorFlow. These are great for getting results fast, but they hide a lot of the details. If you want to really understand how a Transformer works, or if you want to see what’s happening at the lowest level, you have to dig deeper.
 
-Inspired by Andrej Karpathy’s legendary “from scratch” neural network tutorials, I set out to answer these questions for myself. The result is **TransformerCPP**: a high-performance, dependency-free C++ implementation of the Transformer architecture, built from the ground up. No PyTorch, no TensorFlow, no Eigen, not even BLAS. Just C++17, a compiler, and a lot of curiosity.
+I wanted to know what’s really going on inside a Transformer. So I wrote one from scratch in C++. No frameworks, no shortcuts. Just the basics: tensors, layers, attention, and training loops. This project is about learning by building, and about making every part of the model visible and modifiable.
 
-## What Is TransformerCPP?
+## What This Project Is
 
-TransformerCPP is a complete, modular implementation of the Transformer model as described in the “Attention Is All You Need” paper. It’s designed for CPU execution, with multi-threading and SIMD optimizations for speed. The codebase is organized so you can see, touch, and modify every part of the model—from tensor operations to attention mechanisms to training loops.
+TransformerCPP is a full implementation of the Transformer model, as described in the “Attention Is All You Need” paper. It’s written in C++17, and it doesn’t use any external deep learning libraries. Everything is built from the ground up, including the tensor operations, the attention mechanism, and the training process.
 
-## Design Philosophy
+The code is organized so you can see how each part works. If you want to change something, you can. If you want to understand something, you can read the code directly.
 
-- **Transparency**: Every line of code is meant to be readable and hackable. If you want to know how backpropagation works, or how multi-head attention is implemented, you can just look.
-- **Performance**: The implementation is optimized for CPUs, using thread pools and SIMD where possible. You can train and run models efficiently, even on modest hardware.
-- **Modularity**: Components are separated cleanly—tensors, layers, models, data loaders—so you can experiment, swap things out, or extend the codebase.
-- **Minimal Dependencies**: Only the C++ standard library is used. No external deep learning frameworks or math libraries.
+## Main Ideas
 
-## What’s Inside?
+- **Transparency**: You can see and change every part of the model. There’s no hidden magic.
+- **Performance**: The code is optimized for CPUs. It uses threads and SIMD instructions to make things faster.
+- **Modularity**: Each part of the model (tensors, layers, data loading) is separated, so you can work on one part without breaking the rest.
+- **No Dependencies**: Only the C++ standard library is used. No external math or neural network libraries.
+
+## What’s Inside
 
 ### Core Tensor Operations
 
-- Custom tensor class with broadcasting, reshaping, and arithmetic
-- Thread-pooled execution for heavy computations
+- Custom tensor class with support for broadcasting, reshaping, and arithmetic
+- Thread pool for running heavy computations in parallel
 - Automatic differentiation for backpropagation
 
 ### Neural Network Layers
 
-- Linear layers (weights + biases)
-- Multi-head attention (the heart of the Transformer)
-- Position-wise feed-forward networks
+- Linear layers (matrix multiply + bias)
+- Multi-head attention (the main part of the Transformer)
+- Feed-forward networks
 - Layer normalization and dropout
 - Embedding and positional encoding
 
-### Model Architecture
+### Model Structure
 
 - Encoder stack with self-attention
 - Decoder stack with masked self-attention and encoder-decoder attention
-- Full Transformer model combining encoder and decoder
+- Full Transformer model that combines encoder and decoder
 
-### Data Processing
+### Data Handling
 
 - Character-level tokenization
-- Batch processing and sequence handling
+- Batch processing and sequence management
 - DataLoader for training and inference
 
-### Configuration and Utilities
+### Utilities
 
-- Config parser for model hyperparameters
+- Config file parser for hyperparameters
 - Thread pool for parallel execution
-- Helper functions for common operations
+- Helper functions for common tasks
 
-## How Do You Build It?
+## How to Build
 
-You’ll need a C++17-compatible compiler and CMake (3.14+).
+You need a C++17 compiler and CMake (3.14+).
 
 ```bash
 git clone https://github.com/nivashkr/transformers-from-scratch.git
-cd transformer.cpp
+cd transformers-from-scratch
 mkdir build
 cd build
 cmake ..
 make
 ```
 
-## How Do You Run It?
+## How to Use
 
-The project supports both training and inference. Configuration is handled via `config.ini`.
+All settings are in `config.ini`. You can switch between training and inference by changing a single line.
 
 ### Example `config.ini`:
 
@@ -103,17 +103,19 @@ num_threads = 500
 ### Training
 
 1. Set `inference_mode = false` in `config.ini`
-2. Adjust training parameters as needed
+2. Adjust training parameters if needed
 3. Run:
 
 ```bash
 ./neural_network
 ```
 
+The model will train on your dataset and save the weights.
+
 ### Inference
 
 1. Set `inference_mode = true`
-2. Ensure `load_existing_weights = true` and `weights_filename` is correct
+2. Make sure `load_existing_weights = true` and `weights_filename` is correct
 3. Set your `initial_prompt` and `max_generate_length`
 4. Run:
 
@@ -121,24 +123,26 @@ num_threads = 500
 ./neural_network
 ```
 
+The model will load the weights and generate text.
+
 ## Testing
 
-A test suite for tensor operations is included:
+There’s a test suite for tensor operations:
 
 ```bash
 ./test_tensor
 ```
 
-## Performance Tips
+## Performance Notes
 
-- Set `num_threads` in `config.ini` to match your hardware for best results.
-- Multi-threading is used for matrix multiplications, element-wise ops, and attention.
-- Compile with SIMD flags for extra speed.
+- Set `num_threads` in `config.ini` to match your CPU for best speed.
+- Multi-threading is used for matrix multiplications, element-wise operations, and attention.
+- Compile with SIMD flags for extra speed if your compiler supports it.
 
 ## Final Thoughts
 
-TransformerCPP is my attempt to demystify the Transformer architecture and make it accessible to anyone willing to dive into the code. If you’re curious about how deep learning works at the lowest level, or if you want a fast, flexible Transformer implementation in C++, this project is for you.
+This project is for anyone who wants to see how Transformers work at the lowest level, or who wants a fast, flexible Transformer implementation in C++. If you want to learn, experiment, or just see what’s possible without big frameworks, take a look at the code.
 
+If you have questions or want to contribute, check out the [GitHub repo](https://github.com/nivashkr/transformers-from-scratch).
 
 ---
-
