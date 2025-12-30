@@ -1,158 +1,144 @@
-# TransformerCPP
-[github repo](https://github.com/nivashkr/transformers-from-scratch)
+# TransformerCPP: Building Transformers from Scratch in C++
 
-Inspired from karpthy's from-scratch neural implementations in c++.
-A high-performance C++ implementation of the Transformer architecture from scratch, optimized for CPU computation.
+*“The best way to understand something is to build it from scratch.”* — Andrej Karpathy (probably)
+\
+Check out the [GitHub repo](https://github.com/nivashkr/transformers-from-scratch). 
 
-## Overview
+## Why Write Yet Another Transformer?
 
-TransformerCPP is a complete implementation of the Transformer model architecture described in the "Attention Is All You Need" paper. This project aims to provide an efficient C++ implementation without external dependencies on deep learning frameworks.
+Deep learning frameworks are amazing. They let us build, train, and deploy state-of-the-art models with just a few lines of code. But sometimes, the magic feels a bit too magical. What’s really happening under the hood? How do those matrix multiplications, attention heads, and layer normalizations actually work? 
+
+Inspired by Andrej Karpathy’s legendary “from scratch” neural network tutorials, I set out to answer these questions for myself. The result is **TransformerCPP**: a high-performance, dependency-free C++ implementation of the Transformer architecture, built from the ground up. No PyTorch, no TensorFlow, no Eigen, not even BLAS. Just C++17, a compiler, and a lot of curiosity.
+
+## What Is TransformerCPP?
+
+TransformerCPP is a complete, modular implementation of the Transformer model as described in the “Attention Is All You Need” paper. It’s designed for CPU execution, with multi-threading and SIMD optimizations for speed. The codebase is organized so you can see, touch, and modify every part of the model—from tensor operations to attention mechanisms to training loops.
 
 ## Design Philosophy
 
-The core design principles of this project are:
+- **Transparency**: Every line of code is meant to be readable and hackable. If you want to know how backpropagation works, or how multi-head attention is implemented, you can just look.
+- **Performance**: The implementation is optimized for CPUs, using thread pools and SIMD where possible. You can train and run models efficiently, even on modest hardware.
+- **Modularity**: Components are separated cleanly—tensors, layers, models, data loaders—so you can experiment, swap things out, or extend the codebase.
+- **Minimal Dependencies**: Only the C++ standard library is used. No external deep learning frameworks or math libraries.
 
-1. **Performance**: The implementation is optimized for CPU execution with multi-threading support for computationally intensive operations.
-
-2. **Modularity**: The codebase is organized in a modular way with clear separation between different components (tensor operations, layers, models).
-
-3. **Flexibility**: The architecture supports both training and inference modes, with configurable parameters.
-
-4. **Minimal Dependencies**: The implementation relies only on the C++ standard library, with no external dependencies on deep learning frameworks.
-
-## Project Structure
-
-The project is organized into several main components:
+## What’s Inside?
 
 ### Core Tensor Operations
-- Custom tensor implementation with support for broadcasting, reshaping, and basic arithmetic operations
-- Thread-pooled execution for performance-critical operations
+
+- Custom tensor class with broadcasting, reshaping, and arithmetic
+- Thread-pooled execution for heavy computations
 - Automatic differentiation for backpropagation
 
 ### Neural Network Layers
-- Linear layers with weights and biases
-- Multi-head attention mechanism
+
+- Linear layers (weights + biases)
+- Multi-head attention (the heart of the Transformer)
 - Position-wise feed-forward networks
-- Layer normalization
-- Dropout for regularization
+- Layer normalization and dropout
 - Embedding and positional encoding
 
 ### Model Architecture
+
 - Encoder stack with self-attention
 - Decoder stack with masked self-attention and encoder-decoder attention
 - Full Transformer model combining encoder and decoder
 
 ### Data Processing
+
 - Character-level tokenization
 - Batch processing and sequence handling
 - DataLoader for training and inference
 
 ### Configuration and Utilities
-- Configuration parser for model hyperparameters
-- Thread pool implementation for parallel execution
-- Helper functions for various operations
 
-## Building the Project
+- Config parser for model hyperparameters
+- Thread pool for parallel execution
+- Helper functions for common operations
 
-### Requirements
-- C++17 compatible compiler
-- CMake (version 3.14 or higher)
+## How Do You Build It?
 
-### Build Instructions
+You’ll need a C++17-compatible compiler and CMake (3.14+).
 
 ```bash
-# Clone the repository
-git clone https://github.com/KrishM123/transformer.cpp.git
+git clone https://github.com/nivashkr/transformers-from-scratch.git
 cd transformer.cpp
-
-# Create build directory
 mkdir build
 cd build
-
-# Configure and build
 cmake ..
 make
 ```
 
-## Running the Project
+## How Do You Run It?
 
-The project can be run in two modes: training and inference.
+The project supports both training and inference. Configuration is handled via `config.ini`.
 
-### Configuration
-
-Before running, you can modify the parameters in `config.ini`:
+### Example `config.ini`:
 
 ```ini
-# Model mode
-inference_mode = true           # Set to false for training
-load_existing_weights = true    # Whether to load pre-trained weights
+inference_mode = true
+load_existing_weights = true
 weights_filename = transformer_weights.bin
 data_filename = ../data/tiny_shakespeare.txt
 
-# Model architecture
-embed_dim = 256                 # Embedding dimension
-max_sequence_length = 100       # Maximum sequence length
-num_layers = 8                  # Number of encoder/decoder layers
-num_heads = 8                   # Number of attention heads
-ff_hidden_dim = 1024            # Feed-forward hidden dimension
-dropout_rate = 0.1              # Dropout rate
-pad_token_id = 0.0              # Padding token ID
+embed_dim = 256
+max_sequence_length = 100
+num_layers = 8
+num_heads = 8
+ff_hidden_dim = 1024
+dropout_rate = 0.1
+pad_token_id = 0.0
 
-# Training parameters
-learning_rate = 0.0005          # Learning rate for Adam optimizer
-num_epochs = 100                # Number of training epochs
-batch_size = 16                 # Batch size
-input_seq_length = 10           # Input sequence length
-decoder_seq_length = 10         # Decoder sequence length
+learning_rate = 0.0005
+num_epochs = 100
+batch_size = 16
+input_seq_length = 10
+decoder_seq_length = 10
 
-# Inference parameters
-max_generate_length = 100       # Maximum length to generate
-initial_prompt = ROMEO:         # Initial prompt for text generation
+max_generate_length = 100
+initial_prompt = ROMEO:
 
-# Performance parameters
-num_threads = 500               # Number of threads for parallel execution
+num_threads = 500
 ```
 
-### Training Mode
-
-To train the model:
+### Training
 
 1. Set `inference_mode = false` in `config.ini`
-2. Configure training parameters as needed
-3. Run the executable:
+2. Adjust training parameters as needed
+3. Run:
 
 ```bash
 ./neural_network
 ```
 
-The model will train on the specified dataset and save the weights to the specified file.
+### Inference
 
-### Inference Mode
-
-To generate text with a trained model:
-
-1. Set `inference_mode = true` in `config.ini`
-2. Make sure `load_existing_weights = true` and `weights_filename` points to a valid weights file
-3. Configure the `initial_prompt` and `max_generate_length` as desired
-4. Run the executable:
+1. Set `inference_mode = true`
+2. Ensure `load_existing_weights = true` and `weights_filename` is correct
+3. Set your `initial_prompt` and `max_generate_length`
+4. Run:
 
 ```bash
 ./neural_network
 ```
-
-The model will load the weights and generate text based on the initial prompt.
 
 ## Testing
 
-The project includes a test suite for the tensor operations:
+A test suite for tensor operations is included:
 
 ```bash
-# Run the tensor tests
 ./test_tensor
 ```
 
-## Performance Considerations
+## Performance Tips
 
-- The `num_threads` parameter in `config.ini` controls parallel execution. For optimal performance, set this to a value appropriate for your hardware.
-- Multi-threading is applied to computationally intensive operations such as matrix multiplication, element-wise operations, and attention calculations.
-- The implementation uses SIMD optimizations when compiled with appropriate flags.
+- Set `num_threads` in `config.ini` to match your hardware for best results.
+- Multi-threading is used for matrix multiplications, element-wise ops, and attention.
+- Compile with SIMD flags for extra speed.
+
+## Final Thoughts
+
+TransformerCPP is my attempt to demystify the Transformer architecture and make it accessible to anyone willing to dive into the code. If you’re curious about how deep learning works at the lowest level, or if you want a fast, flexible Transformer implementation in C++, this project is for you.
+
+
+---
+
