@@ -145,4 +145,6 @@ This project is for anyone who wants to see how Transformers work at the lowest 
 
 If you have questions or want to contribute, check out the [GitHub repo](https://github.com/nivashkr/transformers-from-scratch).
 
+
+ps: inspired by karpathy's zero to hero neural network series.
 ---
